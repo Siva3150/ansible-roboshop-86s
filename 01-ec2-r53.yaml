@@ -8,6 +8,7 @@
    zone_id: "Z090071510OXTGFIDW0RR" # replace with your zone ID
    domain_name: "sivadevops.space" # replace with your domain-name
   # we can pass instances through command line using -e
+  #ansible-playbook -i inventory.ini -e "instances=['mongodb','redis','mysql','rabbitmq','frontend']"  01-ec2-r53.yaml
   #  instances: 
   #   - mongodb
   #   - redis
