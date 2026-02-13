@@ -7,11 +7,11 @@
    zone_id: "Z090071510OXTGFIDW0RR" # replace with your zone ID
    domain_name: "sivadevops.space" # replace with your domain-name
     # we can pass instances through command line using -e
-    instances: 
-    - mongodb
-    # - redis
-    # - mysql
-    # - rabbitmq
+  instances: 
+  - mongodb
+  # - redis
+  # - mysql
+  # - rabbitmq
   tasks: 
   - name: create ec2-instances
     amazon.aws.ec2_instance:
