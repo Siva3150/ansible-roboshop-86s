@@ -7,13 +7,13 @@
    sg_id: sg-03f403f2be7db3bbc # replace with your sg ID
    zone_id: "Z090071510OXTGFIDW0RR" # replace with your zone ID
    domain_name: "sivadevops.space" # replace with your domain-name
-    # we can pass instances through command line using -e
-   instances: 
-    - mongodb
-    - redis
-    - mysql
-    - rabbitmq
-    - frontend
+  # we can pass instances through command line using -e
+  #  instances: 
+  #   - mongodb
+  #   - redis
+  #   - mysql
+  #   - rabbitmq
+  #   - frontend
   tasks: 
   - name: create ec2-instances
     amazon.aws.ec2_instance:
