@@ -74,7 +74,7 @@
 
   - name: evaluate catalogue database
     community.mongodb.mongodb_shell:
-     login_host: mongod.sivadevops.space 
+     login_host: mongodb.sivadevops.space 
      eval: db.getMongo().getDBNames().indexOf('catalogue')
     register: catalogue_output
 
