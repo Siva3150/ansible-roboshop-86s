@@ -12,9 +12,9 @@
      name: rabbitmq-server
      state: present 
 
-  - name: start and enable mongodb service 
+  - name: start and enable rabbitmq service 
     ansible.builtin.service: 
-     name: mongod
+     name: rabbitmq
      state: started 
      enabled: yes  
 
