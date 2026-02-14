@@ -1,5 +1,5 @@
-- name: Configuring catalogue 
-  hosts: catalogue 
+- name: Configuring cart 
+  hosts: cart 
   become: yes 
   tasks: 
   - name: Disable default nodejs version  
@@ -13,39 +13,39 @@
      name: nodejs 
      state: present 
 
-  - name: create roboshop system user
-    ansible.builtin.user:
+  - name: create roboshop system cart
+    ansible.builtin.cart:
       name: roboshop
-      comment: RoboShop System user
+      comment: RoboShop System cart
       state: present
       system: true 
       shell: /sbin/nologin
       home: /app 
 
  # Safe to remove directory, because 2nd time if we run it will download freshly. no error if does not exist
-  # - name: Remove app direcory 
-  #   ansible.builtin.file:
-  #    path: /app
-  #    state: absent 
+  - name: Remove app direcory 
+    ansible.builtin.file:
+     path: /app
+     state: absent 
 
   - name: Create app direcory 
     ansible.builtin.file:
      path: /app
      state: directory
 
-  # - name: Delete catalogue file  
-  #   ansible.builtin.file:
-  #    path: /tmp/catalogue.zip
-  #    state: absent 
+  - name: Delete cart file  
+    ansible.builtin.file:
+     path: /tmp/cart.zip
+     state: absent 
 
-  - name: Download catalogue application
+  - name: Download cart application
     ansible.builtin.get_url:
-     url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
-     dest: /tmp/catalogue.zip
+     url: https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip
+     dest: /tmp/cart.zip
 
-  - name: extract catalogue application 
+  - name: extract cart application 
     ansible.builtin.unarchive:
-     src: /tmp/catalogue.zip
+     src: /tmp/cart.zip
      dest: /app 
      remote_src: yes
 
@@ -53,46 +53,19 @@
     community.general.npm:
      path: /app 
 
-  - name: Copying catalogue service 
+  - name: Copying cart service 
     ansible.builtin.copy: 
-     src: catalogue.service 
-     dest: /etc/systemd/system/catalogue.service
-
-  - name: Copying mongo repo 
-    ansible.builtin.copy: 
-     src: mongo.repo 
-     dest: /etc/yum.repos.d/mongo.repo
-
-  - name: Install mongodb client 
-    ansible.builtin.dnf: 
-     name: mongodb-mongosh
-     state: present 
-
-  - name: connnect to mongodb catalogue
-    ansible.builtin.command: mongosh mongodb.sivadevops.space --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
-    register: catalogue_output
-
-  - name: evaluate catalogue database
-    community.mongodb.mongodb_shell:
-     login_host: mongod.sivadevops.space 
-     eval: db.getMongo().getDBNames().indexOf('catalogue')
-     register: catalogue_output
-
-  - name: print catalogue output
-    ansible.builtin.debug:
-     msg: "{{ catalogue_output }}"
-
-  
-  - name: load products into mongodb
-    ansible.builtin.shell: mongosh --host mongodb.sivadevops.space </app/db/master-data.js
-    when: catalogue_output.stdout | int < 0
+     src: cart.service 
+     dest: /etc/systemd/system/cart.service
 
   - name: daemon reload, enable and start 
     ansible.builtin.systemd_service:
-     name: catalogue 
+     name: cart 
      state: started
      enabled: true 
      daemon_reload: true
 
+
+    
 
     
