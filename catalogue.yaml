@@ -76,7 +76,7 @@
     community.mongodb.mongodb_shell:
      login_host: mongod.sivadevops.space 
      eval: db.getMongo().getDBNames().indexOf('catalogue')
-     register: catalogue_output
+    register: catalogue_output
 
   - name: print catalogue output
     ansible.builtin.debug:
