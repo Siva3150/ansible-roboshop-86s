@@ -22,48 +22,69 @@
       shell: /sbin/nologin
       home: /app 
 
+ # Safe to remove directory, because 2nd time if we run it will download freshly. no error if does not exist
+  - name: Remove app direcory 
+    ansible.builtin.file:
+     path: /app
+     state: absent 
+
   - name: Create app direcory 
-  ansible.builtin.file:
-    path: /app
-    state: directory
+    ansible.builtin.file:
+     path: /app
+     state: directory
 
-- name: Download catalogue application
-  ansible.builtin.get_url:
-   url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
-   dest: /tmp/catalogue.zip
+  - name: Delete catalogue file  
+    ansible.builtin.file:
+     path: /tmp/catalogue.zip
+     state: absent 
 
-- name: extract catalogue application 
-  ansible.builtin.unarchive:
-    src: /tmp/catalogue.zip
-    dest: /app 
+  - name: Download catalogue application
+    ansible.builtin.get_url:
+     url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
+     dest: /tmp/catalogue.zip
 
-- name: Manage node.js packages with npm
-  community.general.npm:
-    path: /app 
+  - name: extract catalogue application 
+    ansible.builtin.unarchive:
+     src: /tmp/catalogue.zip
+     dest: /app 
 
-- name: Copying catalogue service 
-  ansible.builtin.copy: 
-    src: catalogue.service 
-    dest: /etc/systemd/system/catalogue.service
+  - name: Install dependencies
+    community.general.npm:
+     path: /app 
 
-- name: Copying mongo repo 
-  ansible.builtin.copy: 
-   src: mongo.repo 
-   dest: /etc/yum.repos.d/mongo.repo
+  - name: Copying catalogue service 
+    ansible.builtin.copy: 
+     src: catalogue.service 
+     dest: /etc/systemd/system/catalogue.service
 
-- name: Install mongodb client 
-  ansible.builtin.dnf: 
-    name: mongodb-mongosh
-    state: present 
+  - name: Copying mongo repo 
+    ansible.builtin.copy: 
+     src: mongo.repo 
+     dest: /etc/yum.repos.d/mongo.repo
+
+  - name: Install mongodb client 
+    ansible.builtin.dnf: 
+     name: mongodb-mongosh
+     state: present 
+
+  - name: evaluate catalogue database
+    community.mongodb.mongodb_shell:
+     login_host: mongod.sivadevops.space 
+     eval: db.getMongo().getDBNames().indexOf('catalogue')
+     register: catalogue_output
+
+  - name: print catalogue output
+    ansible.builtin.debug:
+     msg: "{{ catalogue_output }}"
 
 
 
-- name: daemon reload, enable and start 
-  ansible.builtin.systemd_service:
-    name: catalogue 
-    state: started
-    enabled: true 
-    daemon_reload: true
+  - name: daemon reload, enable and start 
+    ansible.builtin.systemd_service:
+     name: catalogue 
+     state: started
+     enabled: true 
+     daemon_reload: true
 
 
     
