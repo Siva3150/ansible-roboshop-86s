@@ -6,3 +6,5 @@
     ansible.builtin.dnf:
       name: nginx
       state: present
+
+#ansible-playbook -i frontend.aws_ec2.yaml -e ansible_user=ec2_user -e ansible_password=DevOps321 nginx.yaml
