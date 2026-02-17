@@ -14,3 +14,5 @@ keyed_groups:
   - key: tags.Name
     prefix: "dynamic" # dynamic_frontend
     separator: "_"
+
+# ansible-inventory -i frontend.aws_ec2.yaml --graph
